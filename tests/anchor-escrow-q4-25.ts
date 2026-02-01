@@ -152,7 +152,7 @@ describe("anchor_escrow_q4_25", () => {
         takerAtaB: takerAtaB,
         makerAtaB: makerAtaB,
         escrow: escrowPda,
-        vault: vault,
+        escrowVault: vault,
         associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
         tokenProgram: TOKEN_PROGRAM_ID,
         systemProgram: anchor.web3.SystemProgram.programId,

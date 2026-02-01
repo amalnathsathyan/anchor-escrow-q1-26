@@ -70,7 +70,7 @@ pub struct Take<'info> {
 }
 
 impl<'info> Take<'info> {
-    pub fn vault_transfer(&mut self) -> Result<()> {
+    pub fn deposit(&mut self) -> Result<()> {
         let transfer_accounts = TransferChecked {
             from: self.escrow_vault.to_account_info(),
             mint: self.mint_a.to_account_info(),
@@ -91,7 +91,7 @@ impl<'info> Take<'info> {
         );
         transfer_checked(cpi_ctx, self.escrow_vault.amount, self.mint_a.decimals)
     }
-    pub fn maker_transfer(&mut self) -> Result<()> {
+    pub fn withdraw_and_close_vault(&mut self) -> Result<()> {
         let transfer_account = TransferChecked {
             from: self.taker_ata_b.to_account_info(),
             to: self.maker_ata_b.to_account_info(),
@@ -100,10 +100,8 @@ impl<'info> Take<'info> {
         };
         let cpi_ctx = CpiContext::new(self.token_program.to_account_info(), transfer_account);
 
-        transfer_checked(cpi_ctx, self.escrow.receive, self.mint_b.decimals)
-    }
+        transfer_checked(cpi_ctx, self.escrow.receive, self.mint_b.decimals)?;
 
-    pub fn close_vault(&mut self) -> Result<()> {
         let seeds = &self.escrow.seed.to_le_bytes();
         let signer_seeds: &[&[&[u8]]] = &[&[
             "escrow".as_bytes(),
